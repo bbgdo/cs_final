@@ -14,4 +14,6 @@ import lombok.NoArgsConstructor;
 public class CategoryDto {
     @NotNull(message = "Category name cannot be null.")
     private String name;
+    @NotNull(message = "Category name cannot be null.")
+    private String description;
 }
