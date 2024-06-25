@@ -13,5 +13,7 @@ public class Product {
     private String name;
     private String description;
     private String producer;
-    private String price;
+    private int amount;
+    private Double price;
+    private String category;
 }
