@@ -3,6 +3,10 @@ package com.warehouse.dao.impl;
 import com.warehouse.dao.ProductDao;
 import com.warehouse.db.DatabaseConnection;
 import com.warehouse.entity.Product;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

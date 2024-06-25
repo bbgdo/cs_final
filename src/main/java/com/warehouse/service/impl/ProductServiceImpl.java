@@ -2,16 +2,25 @@ package com.warehouse.service.impl;
 
 import com.warehouse.converter.ProductConverter;
 import com.warehouse.dao.ProductDao;
+import com.warehouse.dao.impl.ProductDaoImpl;
 import com.warehouse.dto.ProductDto;
 import com.warehouse.service.ProductService;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+
+
 public class ProductServiceImpl implements ProductService {
-    private final ProductDao productDao;
-    private final ProductConverter productConverter;
+    private ProductDao productDao;
+    private ProductConverter productConverter;
 
     public ProductServiceImpl(ProductDao productDao, ProductConverter productConverter) {
         this.productDao = productDao;
