@@ -16,11 +16,12 @@ public class CategoryDaoImpl implements CategoryDao {
 
     private static String GET_ALL = "SELECT * FROM categories ORDER BY category_name";
     private static String GET_BY_ID = "SELECT * FROM categories WHERE category_name = ?";
-    private static String CREATE = "INSERT INTO categories (category_name) VALUES (?)";
-    private static String UPDATE = "UPDATE categories SET category_name = ? WHERE category_name = ?";
+    private static String CREATE = "INSERT INTO categories (category_name, category_description) VALUES (?, ?)";
+    private static String UPDATE = "UPDATE categories SET category_name = ?, category_description = ? WHERE category_name = ?";
     private static String DELETE = "DELETE FROM categories WHERE category_name = ?";
 
     private static String NAME = "category_name";
+    private static String DESCRIPTION = "category_description";
 
     private Connection connection;
     private boolean connectionShouldBeClosed;
@@ -73,6 +74,7 @@ public class CategoryDaoImpl implements CategoryDao {
     public void create(Category category){
         try (PreparedStatement query = connection.prepareStatement(CREATE)) {
             query.setString(1, category.getName());
+            query.setString(2, category.getDescription());
             query.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error("CategoryDaoImpl create SQL exception", e);
@@ -84,7 +86,8 @@ public class CategoryDaoImpl implements CategoryDao {
     public void update(Category category, String newName){
         try (PreparedStatement query = connection.prepareStatement(UPDATE)) {
             query.setString(1, category.getName());
-            query.setString(2, newName);
+            query.setString(2, category.getDescription());
+            query.setString(3, newName);
             query.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error("CategoryDaoImpl update SQL exception", e);
@@ -119,6 +122,9 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     protected static Category extractCategoryFromResultSet(ResultSet resultSet) throws SQLException {
-        return Category.builder().name(resultSet.getString(NAME)).build();
+        return Category.builder()
+                .name(resultSet.getString(NAME))
+                .description(resultSet.getString(DESCRIPTION))
+                .build();
     }
 }
