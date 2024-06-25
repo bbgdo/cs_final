@@ -24,7 +24,7 @@ public class ProductDto {
     private int amount;
     @NotNull(message = "Product price cannot be null.")
     @Min(value = 0, message = "Product price cannot be less then 0.")
-    private String price;
+    private Double price;
     @NotNull(message = "Product category cannot be null.")
     private String category;
 }

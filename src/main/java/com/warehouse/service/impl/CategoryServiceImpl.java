@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CategodyServiceImpl implements CategoryService {
+public class CategoryServiceImpl implements CategoryService {
     private final CategoryDao categoryDao;
     private final CategoryConverter categoryConverter;
 
-    public CategodyServiceImpl(CategoryDao categoryDao, CategoryConverter categoryConverter) {
+    public CategoryServiceImpl(CategoryDao categoryDao, CategoryConverter categoryConverter) {
         this.categoryDao = categoryDao;
         this.categoryConverter = categoryConverter;
     }
