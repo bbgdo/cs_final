@@ -30,10 +30,7 @@
             <td th:text="${product.price}"></td>
             <td th:text="${product.category}"></td>
             <td>
-                <button class="btn btn-danger"
-                        data-url="@{/products}"
-                        data-product-name="${product.name}"
-                        onclick="deleteProduct(this)">Delete</button>
+                <button class="btn btn-danger" th:attr="onclick='deleteProduct(this, \'@{/products}\', \'${product.name}\')'">Delete</button>
             </td>
         </tr>
         </tbody>
@@ -41,10 +38,7 @@
 </div>
 <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 <script>
-    function deleteProduct(button) {
-        const url = button.getAttribute('data-url');
-        const productName = button.getAttribute('data-product-name');
-
+    function deleteProduct(button, url, productName) {
         console.log('Product Name:', productName); // Додаємо логування productName
         console.log('Delete URL:', url); // Додаємо логування URL
 
