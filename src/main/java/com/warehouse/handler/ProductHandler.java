@@ -1,6 +1,7 @@
 package com.warehouse.handler;
 
 
+import com.sun.net.httpserver.Authenticator;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.warehouse.config.ThymeleafConfig;
@@ -11,6 +12,7 @@ import com.warehouse.entity.Product;
 import com.warehouse.service.ProductService;
 import com.warehouse.service.impl.ProductServiceImpl;
 
+import com.warehouse.util.JWTAuth;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -36,11 +38,20 @@ public class ProductHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-            if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
-                handleProductList(exchange);
-            } else {
-                exchange.sendResponseHeaders(405, -1);
-            }
+        // Authentication
+//        JWTAuth jwtUtil = new JWTAuth();
+//        Authenticator.Result authResult = jwtUtil.authenticate(exchange);
+//        if (authResult instanceof Authenticator.Failure) {
+//            exchange.sendResponseHeaders(403, -1);
+//            exchange.close();
+//            return;
+//        }
+
+        if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+            handleProductList(exchange);
+        } else {
+            exchange.sendResponseHeaders(405, -1);
+        }
     }
 
     private void handleGoodRequest(HttpExchange exchange, String method, Long id) throws IOException {
