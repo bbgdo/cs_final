@@ -47,30 +47,17 @@ public class ProductHandler implements HttpHandler {
 //            return;
 //        }
 
-        if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+        String requestMethod = exchange.getRequestMethod();
+        if ("GET".equalsIgnoreCase(requestMethod)) {
             handleProductList(exchange);
+        } else if ("DELETE".equalsIgnoreCase(requestMethod)) {
+            handleDeleteProduct(exchange);
         } else {
             exchange.sendResponseHeaders(405, -1);
         }
     }
 
-    private void handleGoodRequest(HttpExchange exchange, String method, Long id) throws IOException {
-        switch (method) {
-            case "GET":
-                handleGetGood(exchange, id);
-                break;
-            case "POST":
-                handleUpdateGood(exchange, id);
-                break;
-            case "DELETE":
-                handleDeleteGood(exchange, id);
-                break;
-            default:
-                exchange.sendResponseHeaders(405, -1);
-                exchange.close();
-                break;
-        }
-    }
+
 
     private void handleProductList(HttpExchange exchange) throws IOException {
         List<ProductDto> products = productService.getAll();
@@ -121,25 +108,37 @@ public class ProductHandler implements HttpHandler {
         }*/
     }
 
-    private void handleDeleteGood(HttpExchange exchange, Long id) throws IOException {
-        /*try {
-            int rowsAffected = ProductDao.delete(id);
-            if (rowsAffected > 0) {
-                exchange.sendResponseHeaders(204, -1);
-            } else {
-                exchange.sendResponseHeaders(404, -1);
-            }
-            exchange.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            exchange.sendResponseHeaders(500, -1);
-            exchange.close();
-        }*/
+    private void handleDeleteProduct(HttpExchange exchange) throws IOException {
+        String query = exchange.getRequestURI().getQuery();
+        String productName = getQueryParam(query, "name");
+
+        if (productName == null || productName.isEmpty()) {
+            exchange.sendResponseHeaders(400, -1);
+            return;
+        }
+
+        productService.delete(productName);
+        exchange.sendResponseHeaders(200, -1);
     }
 
-    private void handleGoodCreation(HttpExchange exchange, String method) throws IOException {
+    private String getQueryParam(String query, String param) {
+        if (query == null || query.isEmpty()) {
+            return null;
+        }
+        String[] params = query.split("&");
+        for (String p : params) {
+            String[] keyValue = p.split("=");
+            if (keyValue.length == 2 && param.equals(keyValue[0])) {
+                return keyValue[1];
+            }
+        }
+        return null;
+    }
+}
 
-        /*try {
+    /*private void handleGoodCreation(HttpExchange exchange, String method) throws IOException {
+
+        try {
 
 
             ProductDao.create(good);
@@ -152,6 +151,6 @@ public class ProductHandler implements HttpHandler {
             e.printStackTrace();
             exchange.sendResponseHeaders(500, -1);
             exchange.close();
-        }*/
-    }
-}
+        }
+    }*/
+
