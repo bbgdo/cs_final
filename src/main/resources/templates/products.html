@@ -1,41 +1,78 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Product List</title>
-    <link href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/style.css" rel="stylesheet">
+    <title>Список продуктів</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
-<div class="container text-center">
-    <h1>Products</h1>
-    <table class="table table-hover">
-        <thead class="table table-dark">
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Producer</th>
-            <th>Amount</th>
-            <th>Price</th>
-            <th>Category</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="product : ${products}">
-            <td th:text="${product.name}"></td>
-            <td th:text="${product.description} ?: 'No description'"></td>
-            <td th:text="${product.producer}"></td>
-            <td th:text="${product.amount}"></td>
-            <td th:text="${product.price}"></td>
-            <td th:text="${product.category}"></td>
-            <td>
-                <i class="bi bi-trash-fill"></i>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<h1>Список продуктів</h1>
+<table id="productsTable">
+    <thead>
+    <tr>
+        <th>Назва</th>
+        <th>Опис</th>
+        <th>Виробник</th>
+        <th>Кількість</th>
+        <th>Ціна</th>
+        <th>Категорія</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script>
+    const products = {{productsJson}};
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const tableBody = document.getElementById('productsTable').getElementsByTagName('tbody')[0];
+
+        products.forEach(product => {
+            const row = document.createElement('tr');
+
+            const nameCell = document.createElement('td');
+            nameCell.textContent = product.name;
+            row.appendChild(nameCell);
+
+            const descriptionCell = document.createElement('td');
+            descriptionCell.textContent = product.description;
+            row.appendChild(descriptionCell);
+
+            const producerCell = document.createElement('td');
+            producerCell.textContent = product.producer;
+            row.appendChild(producerCell);
+
+            const amountCell = document.createElement('td');
+            amountCell.textContent = product.amount;
+            row.appendChild(amountCell);
+
+            const priceCell = document.createElement('td');
+            priceCell.textContent = product.price;
+            row.appendChild(priceCell);
+
+            const categoryCell = document.createElement('td');
+            categoryCell.textContent = product.category;
+            row.appendChild(categoryCell);
+
+            tableBody.appendChild(row);
+        });
+    });
+
+
+</script>
 </body>
 </html>
