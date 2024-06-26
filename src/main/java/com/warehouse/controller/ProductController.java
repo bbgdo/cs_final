@@ -10,15 +10,13 @@ import com.warehouse.dao.impl.ProductDaoImpl;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
-import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/products/")
+@WebServlet("/products")
 public class ProductController extends HttpServlet {
     private ProductService productService;
 
@@ -34,22 +32,11 @@ public class ProductController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String pathInfo = req.getPathInfo();
+       List<ProductDto> products = productService.getAll();
+       req.setAttribute("products", products);
+       //шось тут дописати ще і потім на products.jsp
 
-        if (pathInfo == null || pathInfo.equals("/")) {
-            List<ProductDto> products = productService.getAll();
-            req.setAttribute("products", products);
-            req.getRequestDispatcher("/WEB-INF/views/products.jsp").forward(req, resp);
-        } else {
-            String name = pathInfo.substring(1);
-            Optional<ProductDto> product = productService.getById(name);
-            if (product.isPresent()) {
-                req.setAttribute("product", product.get());
-                req.getRequestDispatcher("/WEB-INF/views/product.jsp").forward(req, resp);
-            } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Product not found");
-            }
-        }
     }
+
 
 }
