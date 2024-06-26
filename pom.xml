@@ -7,6 +7,9 @@
   <version>1.0-SNAPSHOT</version>
   <name>final_proj Maven Webapp</name>
   <url>http://maven.apache.org</url>
+  <properties>
+    <java.version>21</java.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -36,6 +39,18 @@
       <artifactId>mockito-core</artifactId>
       <version>5.12.0</version>
       <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>bootstrap</artifactId>
+      <version>5.3.3</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.webjars/webjars-locator -->
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>webjars-locator</artifactId>
+      <version>0.52</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -67,9 +82,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
         <configuration>
-          <source>8</source>
-          <target>8</target>
+          <source>21</source>
+          <target>21</target>
         </configuration>
       </plugin>
     </plugins>

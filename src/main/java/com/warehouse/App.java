@@ -2,6 +2,7 @@ package com.warehouse;
 
 import com.sun.net.httpserver.HttpServer;
 import com.warehouse.handler.ProductHandler;
+import com.warehouse.handler.StaticFileHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -12,6 +13,8 @@ public class App {
         httpServer.bind(new InetSocketAddress(8080), 0);
 
         httpServer.createContext("/products", new ProductHandler());
+        httpServer.createContext("/static", new StaticFileHandler());
+        httpServer.createContext("/webjars", new StaticFileHandler());
         //httpServer.createContext("/api/good/{id}", new GoodHandler()).setAuthenticator(new Auth());
 
         httpServer.setExecutor(null);
