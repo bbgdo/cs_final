@@ -10,6 +10,8 @@ import com.warehouse.dao.impl.ProductDaoImpl;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -34,8 +36,9 @@ public class ProductController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
        List<ProductDto> products = productService.getAll();
        req.setAttribute("products", products);
-       //шось тут дописати ще і потім на products.jsp
-
+       req.getRequestDispatcher("products.jsp").forward(req, resp);
+       //RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/products.jsp");
+       //dispatcher.forward(req, resp); спробуй ось ці два рядка замість останнього якщо ен спрацює
     }
 
 
