@@ -79,6 +79,25 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
+    public void addAmount(int amount, String name) {
+        Product product = getById(name).get();
+        product.setAmount(product.getAmount() + amount);
+        update(product, name);
+    }
+
+    @Override
+    public void writeOff(int amount, String name) {
+        Product product = getById(name).get();
+        int newAmount = product.getAmount() - amount;
+        if(newAmount < 0) {
+            throw new IllegalArgumentException("The amount of products cannot be less than zero.");
+        } else {
+            product.setAmount(newAmount);
+            update(product, name);
+        }
+    }
+
+    @Override
     public void create(Product product) {
         try (PreparedStatement query = connection.prepareStatement(CREATE)) {
             query.setString(1, product.getName());

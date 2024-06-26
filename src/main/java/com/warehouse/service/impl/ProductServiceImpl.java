@@ -15,9 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
-
-
 public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
     private ProductConverter productConverter;
@@ -38,6 +35,23 @@ public class ProductServiceImpl implements ProductService {
     public Optional<ProductDto> getById(String name) {
         return productDao.getById(name)
                 .map(productConverter::convertToDto);
+    }
+
+    @Override
+    public void addAmount(int amount, String name) {
+        productDao.addAmount(amount, name);
+    }
+
+    @Override
+    public void writeOff(int amount, String name) {
+        ProductDto productDto = getById(name).get();
+        int newAmount = productDto.getAmount() - amount;
+        if (newAmount < 0) {
+            throw new IllegalArgumentException("The amount of products cannot be less than zero.");
+        } else {
+            productDto.setAmount(newAmount);
+            productDao.writeOff(amount, name);
+        }
     }
 
     @Override

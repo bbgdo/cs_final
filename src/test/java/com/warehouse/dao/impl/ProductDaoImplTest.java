@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class ProductDaoImplTest {
     private DatabaseConnection dbConnection;
     private Connection connection;
@@ -133,5 +135,33 @@ class ProductDaoImplTest {
         }
         productDao.delete("test_product_8888888888888");
         assertThrows(NoSuchElementException.class, () -> productDao.getById("test_product_8888888888888").get());
+    }
+
+    @Test
+    void testAddAmountProductShouldIncreaseProductAmount() {
+        Product productBeforeAdd = productDao.getById("test_product_9999999999999").get();
+        int addAmount = 1337;
+        productDao.addAmount(addAmount, productBeforeAdd.getName());
+        Product productAfterAdd = productDao.getById("test_product_9999999999999").get();
+        assertEquals(productBeforeAdd.getAmount() + addAmount, productAfterAdd.getAmount());
+    }
+
+    @Test
+    void testWriteOffProductShouldDecreaseProductAmount() {
+        Product productBeforeWriteOff = productDao.getById("test_product_9999999999999").get();
+        int writeOffAmount = productBeforeWriteOff.getAmount();
+        productDao.writeOff(writeOffAmount, productBeforeWriteOff.getName());
+        Product productAfterWriteOff = productDao.getById("test_product_9999999999999").get();
+        assertEquals(productBeforeWriteOff.getAmount() - writeOffAmount, productAfterWriteOff.getAmount());
+    }
+
+    @Test
+    void testWriteOffMoreThenProductAmountShouldThrowException() {
+        Product productBeforeWriteOff = productDao.getById("test_product_9999999999999").get();
+        int beforeWriteOffAmount = productBeforeWriteOff.getAmount();
+        int writeOffAmount = productBeforeWriteOff.getAmount() + 1;
+        assertThrows(IllegalArgumentException.class, () -> productDao.writeOff(writeOffAmount, productBeforeWriteOff.getName()));
+        // Amount should not change
+        assertEquals(beforeWriteOffAmount, productBeforeWriteOff.getAmount());
     }
 }
