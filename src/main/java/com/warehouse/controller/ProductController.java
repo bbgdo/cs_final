@@ -26,8 +26,12 @@ public class ProductController extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         try {
+            // Ініціалізація драйвера
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Ініціалізація сервісу
             productService = new ProductServiceImpl(new ProductDaoImpl(), new ProductConverter());
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
@@ -36,9 +40,8 @@ public class ProductController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
        List<ProductDto> products = productService.getAll();
        req.setAttribute("products", products);
-       req.getRequestDispatcher("products.jsp").forward(req, resp);
-       //RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/products.jsp");
-       //dispatcher.forward(req, resp); спробуй ось ці два рядка замість останнього якщо ен спрацює
+       RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/products.jsp");
+       dispatcher.forward(req, resp);
     }
 
 
