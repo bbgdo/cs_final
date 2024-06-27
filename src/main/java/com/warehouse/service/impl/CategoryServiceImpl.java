@@ -32,6 +32,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public double categoryValue(String name) {
+        return categoryDao.categoryValue(name);
+    }
+
+    @Override
     public void create(CategoryDto categoryDto) {
         categoryDao.create(categoryConverter.convertToEntity(categoryDto));
     }

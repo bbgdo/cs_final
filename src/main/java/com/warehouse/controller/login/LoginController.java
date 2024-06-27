@@ -1,4 +1,4 @@
-package com.warehouse.controller;
+package com.warehouse.controller.login;
 
 import com.warehouse.dao.impl.ProductDaoImpl;
 import com.warehouse.dao.impl.UserDaoImpl;
@@ -35,7 +35,7 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Відображення сторінки входу
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/login/login.jsp");
         dispatcher.forward(req, resp);
     }
 
@@ -55,7 +55,7 @@ public class LoginController extends HttpServlet {
 
         if (login == null || login.isEmpty()) {
             req.setAttribute("errorMessage", "Login cannot be empty");
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/login/login.jsp");
             dispatcher.forward(req, resp);
             return;
         }
@@ -68,7 +68,7 @@ public class LoginController extends HttpServlet {
         } else {
             // Невдалий вхід, повернення на сторінку входу з помилкою
             req.setAttribute("errorMessage", "Invalid login or password");
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/login/login.jsp");
             dispatcher.forward(req, resp);
         }
     }

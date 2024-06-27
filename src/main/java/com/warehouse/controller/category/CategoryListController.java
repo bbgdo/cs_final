@@ -15,7 +15,9 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/categories")
 public class CategoryListController extends HttpServlet {
@@ -35,7 +37,16 @@ public class CategoryListController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<CategoryDto> categories = categoryService.getAll();
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+        List<CategoryDto> categoriesList = categoryService.getAll();
+        Map<CategoryDto, Double> categories = new HashMap<>();
+        for (CategoryDto category : categoriesList){
+            categories.put(category, categoryService.categoryValue(category.getName()));
+        }
         req.setAttribute("categories", categories);
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/category/categories.jsp");
         dispatcher.forward(req, resp);

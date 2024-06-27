@@ -1,4 +1,5 @@
 <%@ page import="com.warehouse.dto.ProductDto" %>
+<%@ page import="com.warehouse.dto.CategoryDto" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -21,7 +22,7 @@
                     <a class="nav-link text-white" aria-current="page" href="/">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active text-white" href="/products">Products</a>
+                    <a class="nav-link text-white" id="nav-active-link" href="/products">Products</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="/categories">Categories</a>
@@ -33,12 +34,43 @@
 <div class="container text-center">
 <h1>Product List</h1>
 </div>
-<a href="/products/add" class="btn btn-success">Add product</a>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col d-flex text-start">
+            <a href="/products/add" class="btn btn-success">Add product</a>
+        </div>
+        <div class="col d-flex text-end">
+            <button class="btn btn-dark dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Categories
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark">
+                <%
+                    List<CategoryDto> categories = (List<CategoryDto>) request.getAttribute("categories");
+                    if (categories != null) {
+                        for (CategoryDto category : categories) {
+                %>
+                <li>
+                    <a class="dropdown-item" href="<%= request.getContextPath() %>/products?category_search=<%= category.getName() %>">
+                        <%= category.getName() %>
+                    </a>
+                </li>
+                <%
+                        }
+                    }
+                %>
+            </ul>
+            <form class="input-group me-2" action="/products" method="get">
+                <input class="form-control" placeholder="name" type="text" id="name_search" name="name_search" required>
+                <button type="submit" class="btn btn-outline-dark">Search</button>
+            </form>
+            <a href="/products" class="btn btn-dark">Reset</a>
+        </div>
+    </div>
+</div>
 <table class="table table-hover">
     <thead class="table table-dark">
     <tr>
         <th>Name</th>
-        <th>Description</th>
         <th>Producer</th>
         <th>Amount</th>
         <th>Price</th>
@@ -54,13 +86,16 @@
     %>
     <tr>
         <td><%= product.getName() %></td>
-        <td><%= product.getDescription() %></td>
         <td><%= product.getProducer() %></td>
         <td><%= product.getAmount() %></td>
         <td><%= product.getPrice() %></td>
         <td><%= product.getCategory() %></td>
-        <td>
-            <button class="btn btn-info" type="button" onclick="editProduct('<%= product.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
+        <td class="text-end">
+            <button class="btn btn-dark" type="button" onclick="showDetails('<%= product.getName() %>', '<%= product.getDescription() %>', '<%= product.getAmount() %>', '<%= product.getPrice() %>')"><i class="bi bi-eye"></i></button>
+            <button class="btn btn-primary" type="button" onclick="writeOff('<%= product.getName() %>')"><i class="bi bi-dash-circle"></i></button>
+            <input type="number" class="form-control d-inline-block w-25" id="amount-<%= product.getName() %>" min="0">
+            <button class="btn btn-primary" type="button" onclick="addAmount('<%= product.getName() %>')"><i class="bi bi-plus-circle"></i></button>
+            <button class="btn btn-primary" type="button" onclick="editProduct('<%= product.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
             <button class="btn btn-danger" type="button" onclick="deleteProduct('<%= product.getName() %>')"><i class="bi bi-trash-fill"></i></button>
         </td>
     </tr>
@@ -70,6 +105,38 @@
     %>
     </tbody>
 </table>
+<div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productDetailsModalLabel">Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tr>
+                        <th>Description</th>
+                        <div class="text-wrap">
+                            <td id="productDescription"></td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <th>Amount</th>
+                        <td id="productAmount"></td>
+                    </tr>
+                    <tr>
+                        <th>Price</th>
+                        <td id="productPrice"></td>
+                    </tr>
+                    <tr>
+                        <th>Total Value</th>
+                        <td id="productTotalValue"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="/resources/static/js/products.js"></script>
 <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -16,6 +16,7 @@ public class CategoryDaoImpl implements CategoryDao {
 
     private static String GET_ALL = "SELECT * FROM categories ORDER BY category_name";
     private static String GET_BY_ID = "SELECT * FROM categories WHERE category_name = ?";
+    private static String GET_VALUE = "SELECT SUM(product_amount * product_price) AS category_value FROM products WHERE product_category = ?";
     private static String CREATE = "INSERT INTO categories (category_name, category_description) VALUES (?, ?)";
     private static String UPDATE = "UPDATE categories SET category_name = ?, category_description = ? WHERE category_name = ?";
     private static String DELETE = "DELETE FROM categories WHERE category_name = ?";
@@ -68,6 +69,22 @@ public class CategoryDaoImpl implements CategoryDao {
             e.printStackTrace();
         }
         return category;
+    }
+
+    @Override
+    public double categoryValue(String name) {
+        double value = 0;
+        try (PreparedStatement query = connection.prepareStatement(GET_VALUE)) {
+            query.setString(1, name);
+            ResultSet resultSet = query.executeQuery();
+            if (resultSet.next()) {
+                value = resultSet.getDouble("category_value");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("CategoryDaoImpl categoryValue SQL exception: " + name, e);
+            e.printStackTrace();
+        }
+        return value;
     }
 
     @Override

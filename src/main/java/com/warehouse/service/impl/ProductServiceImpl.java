@@ -55,6 +55,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDto> findByCategory(String name) {
+        return productDao.findByCategory(name).stream()
+                .map(productConverter::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void create(ProductDto productDto) {
         productDao.create(productConverter.convertToEntity(productDto));
     }
