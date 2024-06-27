@@ -8,3 +8,16 @@
     margin-top: 15%;
     width: 400px;
 }
+
+.modal-body {
+    word-break: break-word;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 90%;
+}
+
+.modal-content th {
+    white-space: nowrap;
+}

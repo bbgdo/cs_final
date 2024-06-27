@@ -116,7 +116,9 @@
                 <table class="table">
                     <tr>
                         <th>Description</th>
-                        <td id="productDescription"></td>
+                        <div class="text-wrap">
+                            <td id="productDescription"></td>
+                        </div>
                     </tr>
                     <tr>
                         <th>Amount</th>
