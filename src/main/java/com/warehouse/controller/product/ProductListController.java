@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -48,18 +49,28 @@ public class ProductListController extends HttpServlet {
         List<ProductDto> products = new ArrayList<>();
         String name_search = req.getParameter("name_search");
         String category_search = req.getParameter("category_search");
-        if (!(name_search == null) && !(name_search.isEmpty())){
-            products.add(productService.getById(name_search).get());
-        } else if (!(category_search == null) && !(category_search.isEmpty())) {
+
+        if (name_search != null && !name_search.isEmpty()) {
+            Optional<ProductDto> productOpt = productService.getById(name_search);
+            if (productOpt.isPresent()) {
+                products.add(productOpt.get());
+            } else {
+                req.getSession().setAttribute("errorMessage", "Product not found");
+                resp.sendRedirect(req.getContextPath() + "/products");
+                return;
+            }
+        } else if (category_search != null && !category_search.isEmpty()) {
             products.addAll(productService.findByCategory(category_search));
         } else {
             products.addAll(productService.getAll());
         }
+
         req.setAttribute("products", products);
         req.setAttribute("categories", categories);
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/product/products.jsp");
         dispatcher.forward(req, resp);
     }
+
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

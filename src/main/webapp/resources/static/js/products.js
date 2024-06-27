@@ -1,3 +1,10 @@
+document.addEventListener("DOMContentLoaded", function() {
+    const errorMessage = document.getElementById('errorMessage').innerText;
+    if (errorMessage && errorMessage !== "null") {
+        showError(errorMessage);
+    }
+});
+
 function deleteProduct(name) {
     fetch('/products?name=' + name, {
         method: 'DELETE'
@@ -5,7 +12,7 @@ function deleteProduct(name) {
         if (response.ok) {
             window.location.reload();
         } else {
-            alert('Failed to delete product');
+            showError('Failed to delete product');
         }
     });
 }
@@ -23,7 +30,7 @@ function addAmount(name) {
             if (response.ok) {
                 window.location.reload();
             } else {
-                alert('Failed to add amount');
+                showError('Failed to add amount');
             }
         });
     }
@@ -38,7 +45,7 @@ function writeOff(name) {
             if (response.ok) {
                 window.location.reload();
             } else {
-                alert('Failed to write off amount');
+                showError('Failed to write off amount');
             }
         });
     }
@@ -50,6 +57,12 @@ function showDetails(name, description, amount, price) {
     document.getElementById('productPrice').innerText = price;
     document.getElementById('productTotalValue').innerText = amount * price;
 
-    var myModal = new bootstrap.Modal(document.getElementById('productDetailsModal'));
+    const myModal = new bootstrap.Modal(document.getElementById('productDetailsModal'));
     myModal.show();
+}
+
+function showError(message) {
+    document.getElementById('errorMessage').innerText = message;
+    const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+    errorModal.show();
 }
