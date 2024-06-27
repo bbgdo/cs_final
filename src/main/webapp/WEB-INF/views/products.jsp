@@ -19,7 +19,23 @@
         th {
             background-color: #f2f2f2;
         }
+        form {
+            display: inline;
+        }
     </style>
+    <script>
+        function deleteProduct(name) {
+            fetch('<%= request.getContextPath() %>/products?name=' + name, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to delete product');
+                }
+            });
+        }
+    </script>
 </head>
 <body>
 <h2>Product List</h2>
@@ -32,6 +48,7 @@
         <th>Amount</th>
         <th>Price</th>
         <th>Category</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -47,6 +64,9 @@
         <td><%= product.getAmount() %></td>
         <td><%= product.getPrice() %></td>
         <td><%= product.getCategory() %></td>
+        <td>
+            <button type="button" onclick="deleteProduct('<%= product.getName() %>')">Delete</button>
+        </td>
     </tr>
     <%
             }

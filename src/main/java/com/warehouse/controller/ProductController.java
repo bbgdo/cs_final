@@ -44,5 +44,14 @@ public class ProductController extends HttpServlet {
        dispatcher.forward(req, resp);
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String name = req.getParameter("name");
+        if (name != null && !name.isEmpty()) {
+            productService.delete(name);
+        }
+        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    }
+
 
 }
