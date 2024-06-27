@@ -12,7 +12,10 @@ public class UserDaoImpl implements UserDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDaoImpl.class);
 
-    String FIND_BY_LOGIN = "SELECT * FROM users WHERE login = ?";
+    private static final String FIND_BY_LOGIN = "SELECT * FROM users WHERE login = ?";
+
+    private static final String INSERT_USER = "INSERT INTO users (login, password) VALUES (?, ?)";
+
 
     public UserDaoImpl() throws SQLException {
         this(DatabaseConnection.getInstance().getConnection(), true);
@@ -46,6 +49,25 @@ public class UserDaoImpl implements UserDao {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void saveUser(User user) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER)) {
+            preparedStatement.setString(1, user.getLogin());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (connectionShouldBeClosed) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 }

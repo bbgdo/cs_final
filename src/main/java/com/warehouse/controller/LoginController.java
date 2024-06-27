@@ -2,6 +2,7 @@ package com.warehouse.controller;
 
 import com.warehouse.dao.impl.ProductDaoImpl;
 import com.warehouse.dao.impl.UserDaoImpl;
+import com.warehouse.entity.User;
 import com.warehouse.service.UserService;
 import com.warehouse.service.impl.UserServiceImpl;
 
@@ -40,6 +41,15 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String action = req.getParameter("action");
+        if ("register".equals(action)) {
+            handleRegister(req, resp);
+        } else {
+            handleLogin(req, resp);
+        }
+    }
+
+    private void handleLogin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
 
@@ -61,5 +71,17 @@ public class LoginController extends HttpServlet {
             RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
             dispatcher.forward(req, resp);
         }
+    }
+
+    private void handleRegister(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String login = req.getParameter("login");
+        String password = req.getParameter("password");
+
+        User user = new User();
+        user.setLogin(login);
+        user.setPassword(password);
+
+        userService.saveUser(user);
+        resp.sendRedirect(req.getContextPath() + "/login");
     }
 }
