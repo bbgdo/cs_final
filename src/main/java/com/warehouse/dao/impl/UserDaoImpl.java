@@ -16,22 +16,14 @@ public class UserDaoImpl implements UserDao {
 
     private static final String INSERT_USER = "INSERT INTO users (login, password) VALUES (?, ?)";
 
-
+    private Connection connection;
     public UserDaoImpl() throws SQLException {
-        this(DatabaseConnection.getInstance().getConnection(), true);
+        this(DatabaseConnection.getInstance().getConnection());
     }
 
     public UserDaoImpl(Connection connection) {
-        this(connection, false);
-    }
-
-    public UserDaoImpl(Connection connection, boolean connectionShouldBeClosed) {
         this.connection = connection;
-        this.connectionShouldBeClosed = connectionShouldBeClosed;
     }
-
-    private Connection connection;
-    private boolean connectionShouldBeClosed;
 
     @Override
     public User findByLogin(String login) {
@@ -49,6 +41,8 @@ public class UserDaoImpl implements UserDao {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            close();
         }
     }
 
@@ -61,13 +55,16 @@ public class UserDaoImpl implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            if (connectionShouldBeClosed) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            close();
+        }
+    }
+
+    @Override
+    public void close(){
+        try {
+            DatabaseConnection.getInstance().getConnectionPool().releaseConnection(connection);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

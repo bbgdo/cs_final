@@ -92,9 +92,9 @@
         <td><%= product.getCategory() %></td>
         <td class="text-end">
             <button class="btn btn-dark" type="button" onclick="showDetails('<%= product.getName() %>', '<%= product.getDescription() %>', '<%= product.getAmount() %>', '<%= product.getPrice() %>')"><i class="bi bi-eye"></i></button>
-            <button class="btn btn-primary" type="button" onclick="writeOff('<%= product.getName() %>')"><i class="bi bi-dash-circle"></i></button>
-            <input type="number" class="form-control d-inline-block w-25" id="amount-<%= product.getName() %>" min="0">
             <button class="btn btn-primary" type="button" onclick="addAmount('<%= product.getName() %>')"><i class="bi bi-plus-circle"></i></button>
+            <input type="number" class="form-control d-inline-block w-25" id="amount-<%= product.getName() %>" min="0">
+            <button class="btn btn-primary" type="button" onclick="writeOff('<%= product.getName() %>')"><i class="bi bi-dash-circle"></i></button>
             <button class="btn btn-primary" type="button" onclick="editProduct('<%= product.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
             <button class="btn btn-danger" type="button" onclick="deleteProduct('<%= product.getName() %>')"><i class="bi bi-trash-fill"></i></button>
         </td>

@@ -25,20 +25,15 @@ public class CategoryDaoImpl implements CategoryDao {
     private static String DESCRIPTION = "category_description";
 
     private Connection connection;
-    private boolean connectionShouldBeClosed;
 
     public CategoryDaoImpl() throws SQLException {
-        this(DatabaseConnection.getInstance().getConnection(), true);
+        this(DatabaseConnection.getInstance().getConnection());
     }
 
     public CategoryDaoImpl(Connection connection) {
-        this(connection, false);
+        this.connection = connection;
     }
 
-    public CategoryDaoImpl(Connection connection, boolean connectionShouldBeClosed) {
-        this.connection = connection;
-        this.connectionShouldBeClosed = connectionShouldBeClosed;
-    }
 
     @Override
     public List<Category> getAll(){
@@ -51,6 +46,8 @@ public class CategoryDaoImpl implements CategoryDao {
         } catch (SQLException e) {
             LOGGER.error("CategoryDaoImpl getAll SQL exception", e);
             e.printStackTrace();
+        } finally {
+            close();
         }
         return categories;
     }
@@ -67,6 +64,8 @@ public class CategoryDaoImpl implements CategoryDao {
         } catch (SQLException e) {
             LOGGER.error("CategoryDaoImpl getById SQL exception: " + name, e);
             e.printStackTrace();
+        } finally {
+            close();
         }
         return category;
     }
@@ -83,6 +82,8 @@ public class CategoryDaoImpl implements CategoryDao {
         } catch (SQLException e) {
             LOGGER.error("CategoryDaoImpl categoryValue SQL exception: " + name, e);
             e.printStackTrace();
+        } finally {
+            close();
         }
         return value;
     }
@@ -96,6 +97,8 @@ public class CategoryDaoImpl implements CategoryDao {
         } catch (SQLException e) {
             LOGGER.error("CategoryDaoImpl create SQL exception", e);
             e.printStackTrace();
+        } finally {
+            close();
         }
     }
 
@@ -109,6 +112,8 @@ public class CategoryDaoImpl implements CategoryDao {
         } catch (SQLException e) {
             LOGGER.error("CategoryDaoImpl update SQL exception", e);
             e.printStackTrace();
+        } finally {
+            close();
         }
     }
 
@@ -120,19 +125,15 @@ public class CategoryDaoImpl implements CategoryDao {
         } catch (SQLException e) {
             LOGGER.error("CategoryDaoImpl delete SQL exception", e);
             e.printStackTrace();
+        } finally {
+            close();
         }
     }
 
     @Override
     public void close(){
         try {
-            if (connectionShouldBeClosed && connection != null && !connection.isClosed()) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            DatabaseConnection.getInstance().getConnectionPool().releaseConnection(connection);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

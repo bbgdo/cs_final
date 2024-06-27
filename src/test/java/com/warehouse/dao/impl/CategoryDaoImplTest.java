@@ -8,8 +8,11 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -115,4 +118,29 @@ public class CategoryDaoImplTest {
         categoryDao.delete("test_category_8888888888888");
         assertThrows(NoSuchElementException.class, () -> categoryDao.getById("test_category_8888888888888").get());
     }
+
+    @Test
+    void testSimultaneousAccessShouldHandleConcurrency() throws InterruptedException, ExecutionException {
+        int numberOfThreads = 150;
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+
+        Callable<Optional<Category>> task = () -> {
+            CategoryDaoImpl localDao = new CategoryDaoImpl();
+            return localDao.getById("test_category_9999999999999");
+        };
+
+        List<Future<Optional<Category>>> futures = new ArrayList<>();
+        for (int i = 0; i < numberOfThreads; i++) {
+            futures.add(executor.submit(task));
+        }
+
+        for (Future<Optional<Category>> future : futures) {
+            Optional<Category> category = future.get();
+            assertTrue(category.isPresent());
+            assertEquals("test_category_9999999999999", category.get().getName());
+        }
+
+        executor.shutdown();
+    }
+
 }

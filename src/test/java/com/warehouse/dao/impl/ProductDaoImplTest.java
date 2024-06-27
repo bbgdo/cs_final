@@ -10,6 +10,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -164,4 +167,40 @@ class ProductDaoImplTest {
         // Amount should not change
         assertEquals(beforeWriteOffAmount, productBeforeWriteOff.getAmount());
     }
+
+    @Test
+    void testConcurrentAddAmount() throws InterruptedException {
+        final int numberOfThreads = 10;
+        final int amountToAdd = 3;
+        final CountDownLatch startLatch = new CountDownLatch(1);
+        final CountDownLatch endLatch = new CountDownLatch(numberOfThreads);
+
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
+
+        Product initialProduct = productDao.getById("test_product_9999999999999").get();
+        int initialAmount = initialProduct.getAmount();
+
+        for (int i = 0; i < numberOfThreads; i++) {
+            executorService.submit(() -> {
+                try {
+                    startLatch.await();
+                    productDao.addAmount(amountToAdd, "test_product_9999999999999");
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    endLatch.countDown();
+                }
+            });
+        }
+
+        startLatch.countDown(); // Start all threads
+        endLatch.await(); // Wait for all threads to finish
+        executorService.shutdown();
+
+        Product updatedProduct = productDao.getById("test_product_9999999999999").get();
+        int expectedAmount = initialAmount + (amountToAdd * numberOfThreads);
+
+        assertEquals(expectedAmount, updatedProduct.getAmount());
+    }
+
 }
