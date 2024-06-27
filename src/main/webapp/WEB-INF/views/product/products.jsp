@@ -6,41 +6,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Products</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        form {
-            display: inline;
-        }
-    </style>
-    <script>
-        function deleteProduct(name) {
-            fetch('<%= request.getContextPath() %>/products?name=' + name, {
-                method: 'DELETE'
-            }).then(response => {
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Failed to delete product');
-                }
-            });
-        }
-    </script>
+    <link href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/resources/static/css/style.css" rel="stylesheet">
 </head>
 <body>
-<h2>Product List</h2>
-<table>
-    <thead>
+<div class="container text-center">
+<h1>Product List</h1>
+</div>
+<a href="/products/add" class="btn btn-success">Add product</a>
+<table class="table table-hover">
+    <thead class="table table-dark">
     <tr>
         <th>Name</th>
         <th>Description</th>
@@ -65,7 +40,8 @@
         <td><%= product.getPrice() %></td>
         <td><%= product.getCategory() %></td>
         <td>
-            <button type="button" onclick="deleteProduct('<%= product.getName() %>')">Delete</button>
+            <button class="btn btn-info" type="button" onclick="editProduct('<%= product.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
+            <button class="btn btn-danger" type="button" onclick="deleteProduct('<%= product.getName() %>')"><i class="bi bi-trash-fill"></i></button>
         </td>
     </tr>
     <%
@@ -74,5 +50,7 @@
     %>
     </tbody>
 </table>
+<script src="/resources/static/js/products.js"></script>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

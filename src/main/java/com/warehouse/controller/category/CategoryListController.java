@@ -1,16 +1,10 @@
-package com.warehouse.controller;
+package com.warehouse.controller.category;
 
-import com.warehouse.dto.ProductDto;
-import com.warehouse.service.ProductService;
-import com.warehouse.service.impl.ProductServiceImpl;
-import com.warehouse.converter.ProductConverter;
-import com.warehouse.dao.impl.ProductDaoImpl;
-
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
-
+import com.warehouse.converter.CategoryConverter;
+import com.warehouse.dao.impl.CategoryDaoImpl;
+import com.warehouse.dto.CategoryDto;
+import com.warehouse.service.CategoryService;
+import com.warehouse.service.impl.CategoryServiceImpl;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,19 +12,21 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/products")
-public class ProductController extends HttpServlet {
-    private ProductService productService;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+@WebServlet("/categories")
+public class CategoryListController extends HttpServlet {
+    private CategoryService categoryService;
 
     @Override
     public void init() throws ServletException {
         super.init();
         try {
-            // Ініціалізація драйвера
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            // Ініціалізація сервісу
-            productService = new ProductServiceImpl(new ProductDaoImpl(), new ProductConverter());
+            categoryService = new CategoryServiceImpl(new CategoryDaoImpl(), new CategoryConverter());
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -38,20 +34,19 @@ public class ProductController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-       List<ProductDto> products = productService.getAll();
-       req.setAttribute("products", products);
-       RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/products.jsp");
-       dispatcher.forward(req, resp);
+        List<CategoryDto> categories = categoryService.getAll();
+        req.setAttribute("categories", categories);
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/category/categories.jsp");
+        dispatcher.forward(req, resp);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String name = req.getParameter("name");
         if (name != null && !name.isEmpty()) {
-            productService.delete(name);
+            categoryService.delete(name);
         }
         resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
-
 
 }
