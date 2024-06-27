@@ -3,3 +3,8 @@
 #nav-active-link{
     opacity: 0.7;
 }
+
+#log-in-container{
+    margin-top: 15%;
+    width: 400px;
+}

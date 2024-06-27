@@ -24,7 +24,7 @@
                     <a class="nav-link text-white" href="/products">Products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-muted" id="nav-active-link" href="/categories">Categories</a>
+                    <a class="nav-link text-white" id="nav-active-link" id="nav-active-link" href="/categories">Categories</a>
                 </li>
             </ul>
         </div>

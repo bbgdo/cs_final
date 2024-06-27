@@ -14,13 +14,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav text-white">
                 <li class="nav-item">
-                    <a class="nav-link text-muted" aria-current="page" href="/">Home</a>
+                    <a class="nav-link text-white" id="nav-active-link" aria-current="page" href="/">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="/products">Products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" id="nav-active-link" href="/categories">Categories</a>
+                    <a class="nav-link text-white" href="/categories">Categories</a>
                 </li>
             </ul>
         </div>

@@ -22,7 +22,7 @@
                     <a class="nav-link text-white" aria-current="page" href="/">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-muted" href="/products">Products</a>
+                    <a class="nav-link text-white" id="nav-active-link" href="/products">Products</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="/categories">Categories</a>
