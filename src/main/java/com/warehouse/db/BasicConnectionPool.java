@@ -63,7 +63,6 @@ public class BasicConnectionPool implements ConnectionPool{
                 try {
                     wait(100);
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
                     throw new SQLException("Thread interrupted while waiting for a connection", e);
                 }
             }
