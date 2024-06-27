@@ -32,7 +32,7 @@
     </div>
 </nav>
 <div class="container text-center">
-<h1>Product List</h1>
+    <h1>Product List</h1>
 </div>
 <div class="container-fluid">
     <div class="row">
@@ -105,39 +105,37 @@
     %>
     </tbody>
 </table>
-<div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="productDetailsModalLabel">Details</h5>
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table class="table">
-                    <tr>
-                        <th>Description</th>
-                        <div class="text-wrap">
-                            <td id="productDescription"></td>
-                        </div>
-                    </tr>
-                    <tr>
-                        <th>Amount</th>
-                        <td id="productAmount"></td>
-                    </tr>
-                    <tr>
-                        <th>Price</th>
-                        <td id="productPrice"></td>
-                    </tr>
-                    <tr>
-                        <th>Total Value</th>
-                        <td id="productTotalValue"></td>
-                    </tr>
-                </table>
+                <p id="errorMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
             </div>
         </div>
     </div>
 </div>
+
 <script src="/resources/static/js/products.js"></script>
 <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var errorMessage = '<%= session.getAttribute("errorMessage") %>';
+        if (errorMessage && errorMessage !== "null") {
+            document.getElementById('errorMessage').innerText = errorMessage;
+            var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+            <% session.removeAttribute("errorMessage"); %>
+        }
+    });
+</script>
 </body>
 </html>

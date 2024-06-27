@@ -53,3 +53,9 @@ function showDetails(name, description, amount, price) {
     var myModal = new bootstrap.Modal(document.getElementById('productDetailsModal'));
     myModal.show();
 }
+
+function showError(message) {
+    document.getElementById('errorMessage').innerText = message;
+    var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+    errorModal.show();
+}
