@@ -20,6 +20,7 @@ public class ProductDaoImpl implements ProductDao {
 
     private static final String GET_ALL = "SELECT * FROM products ORDER BY product_name";
     private static final String GET_BY_ID = "SELECT * FROM products WHERE product_name = ?";
+    private static final String FIND_BY_CATEGORY = "SELECT * FROM products WHERE product_category = ?";
     private static final String CREATE = "INSERT INTO products (product_name, product_description, product_producer, product_amount, product_price, product_category) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String UPDATE = "UPDATE products SET product_name = ?, product_description = ?, product_producer = ?, product_amount = ?, product_price = ?, product_category = ? WHERE product_name = ?";
     private static final String DELETE = "DELETE FROM products WHERE product_name = ?";
@@ -76,6 +77,22 @@ public class ProductDaoImpl implements ProductDao {
             e.printStackTrace();
         }
         return product;
+    }
+
+    @Override
+    public List<Product> findByCategory(String name) {
+        List<Product> products = new ArrayList<>();
+        try (PreparedStatement query = connection.prepareStatement(FIND_BY_CATEGORY)) {
+            query.setString(1, name);
+            ResultSet resultSet = query.executeQuery();
+            while (resultSet.next()) {
+                products.add(extractProductFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            LOGGER.error("ProductDaoImpl getAll SQL exception", e);
+            e.printStackTrace();
+        }
+        return products;
     }
 
     @Override

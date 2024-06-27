@@ -1,5 +1,5 @@
-<%@ page import="java.util.List" %>
 <%@ page import="com.warehouse.dto.CategoryDto" %>
+<%@ page import="java.util.Map" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -18,13 +18,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item text-white">
-                    <a class="nav-link" aria-current="page" href="/">Home</a>
+                    <a class="nav-link text-white" aria-current="page" href="/">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="/products">Products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active text-white" href="/categories">Categories</a>
+                    <a class="nav-link text-muted" id="nav-active-link" href="/categories">Categories</a>
                 </li>
             </ul>
         </div>
@@ -39,20 +39,24 @@
     <tr>
         <th>Name</th>
         <th>Description</th>
+        <th>Value</th>
         <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <%
-        List<CategoryDto> categories = (List<CategoryDto>) request.getAttribute("categories");
+        Map<CategoryDto, Double> categories = (Map<CategoryDto, Double>) request.getAttribute("categories");
         if (categories != null) {
-            for (CategoryDto category : categories) {
+            for (Map.Entry<CategoryDto, Double> entry : categories.entrySet()) {
+                CategoryDto category = entry.getKey();
+                Double value = entry.getValue();
     %>
     <tr>
         <td><%= category.getName() %></td>
         <td><%= category.getDescription() %></td>
-        <td>
-            <button class="btn btn-info" type="button" onclick="editCategory('<%= category.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
+        <td><%= value %></td>
+        <td class="text-end">
+            <button class="btn btn-primary" type="button" onclick="editCategory('<%= category.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
             <button class="btn btn-danger" type="button" onclick="deleteCategory('<%= category.getName() %>')"><i class="bi bi-trash-fill"></i></button>
         </td>
     </tr>
