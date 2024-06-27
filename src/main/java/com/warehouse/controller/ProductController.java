@@ -36,9 +36,9 @@ public class ProductController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
        List<ProductDto> products = productService.getAll();
        req.setAttribute("products", products);
-       req.getRequestDispatcher("products.jsp").forward(req, resp);
-       //RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/products.jsp");
-       //dispatcher.forward(req, resp); спробуй ось ці два рядка замість останнього якщо ен спрацює
+       req.getRequestDispatcher("WEB-INF/views/products.jsp").forward(req, resp);
+//       RequestDispatcher dispatcher = req.getRequestDispatcher("/webapp/WEB-INF/category.jsp");
+//       dispatcher.forward(req, resp);// спробуй ось ці два рядка замість останнього якщо ен спрацює
     }
 
 
