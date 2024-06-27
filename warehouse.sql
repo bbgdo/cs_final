@@ -66,7 +66,10 @@ CREATE TABLE `products` (
   `product_category` varchar(255) NOT NULL,
   PRIMARY KEY (`product_name`),
   KEY `products___fk` (`product_category`),
-  CONSTRAINT `products___fk` FOREIGN KEY (`product_category`) REFERENCES `categories` (`category_name`)
+  CONSTRAINT products___fk
+      FOREIGN KEY (product_category) REFERENCES categories (category_name)
+          ON UPDATE CASCADE
+          ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
