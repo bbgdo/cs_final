@@ -44,14 +44,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void writeOff(int amount, String name) {
-        ProductDto productDto = getById(name).get();
-        int newAmount = productDto.getAmount() - amount;
-        if (newAmount < 0) {
-            throw new IllegalArgumentException("The amount of products cannot be less than zero.");
-        } else {
-            productDto.setAmount(newAmount);
-            productDao.writeOff(amount, name);
-        }
+        productDao.writeOff(amount, name);
     }
 
     @Override

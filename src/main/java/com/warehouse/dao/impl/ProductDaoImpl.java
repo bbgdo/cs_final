@@ -3,10 +3,6 @@ package com.warehouse.dao.impl;
 import com.warehouse.dao.ProductDao;
 import com.warehouse.db.DatabaseConnection;
 import com.warehouse.entity.Product;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,20 +29,15 @@ public class ProductDaoImpl implements ProductDao {
     private static final String CATEGORY = "product_category";
 
     private Connection connection;
-    private boolean connectionShouldBeClosed;
 
     public ProductDaoImpl() throws SQLException {
-        this(DatabaseConnection.getInstance().getConnection(), true);
+        this(DatabaseConnection.getInstance().getConnection());
     }
 
     public ProductDaoImpl(Connection connection) {
-        this(connection, false);
+        this.connection = connection;
     }
 
-    public ProductDaoImpl(Connection connection, boolean connectionShouldBeClosed) {
-        this.connection = connection;
-        this.connectionShouldBeClosed = connectionShouldBeClosed;
-    }
 
     @Override
     public List<Product> getAll() {
@@ -59,6 +50,8 @@ public class ProductDaoImpl implements ProductDao {
         } catch (SQLException e) {
             LOGGER.error("ProductDaoImpl getAll SQL exception", e);
             e.printStackTrace();
+        } finally {
+            close();
         }
         return products;
     }
@@ -75,6 +68,8 @@ public class ProductDaoImpl implements ProductDao {
         } catch (SQLException e) {
             LOGGER.error("ProductDaoImpl getById SQL exception: " + name, e);
             e.printStackTrace();
+        } finally {
+            close();
         }
         return product;
     }
@@ -91,19 +86,22 @@ public class ProductDaoImpl implements ProductDao {
         } catch (SQLException e) {
             LOGGER.error("ProductDaoImpl getAll SQL exception", e);
             e.printStackTrace();
+        } finally {
+            close();
         }
         return products;
     }
 
     @Override
-    public void addAmount(int amount, String name) {
+    public synchronized void addAmount(int amount, String name) {
         Product product = getById(name).get();
         product.setAmount(product.getAmount() + amount);
         update(product, name);
+        close();
     }
 
     @Override
-    public void writeOff(int amount, String name) {
+    public synchronized void writeOff(int amount, String name) {
         Product product = getById(name).get();
         int newAmount = product.getAmount() - amount;
         if(newAmount < 0) {
@@ -112,6 +110,7 @@ public class ProductDaoImpl implements ProductDao {
             product.setAmount(newAmount);
             update(product, name);
         }
+        close();
     }
 
     @Override
@@ -127,6 +126,8 @@ public class ProductDaoImpl implements ProductDao {
         } catch (SQLException e) {
             LOGGER.error("ProductDaoImpl create SQL exception", e);
             e.printStackTrace();
+        } finally {
+            close();
         }
     }
 
@@ -144,6 +145,8 @@ public class ProductDaoImpl implements ProductDao {
         } catch (SQLException e) {
             LOGGER.error("ProductDaoImpl update SQL exception", e);
             e.printStackTrace();
+        } finally {
+            close();
         }
     }
 
@@ -155,15 +158,15 @@ public class ProductDaoImpl implements ProductDao {
         } catch (SQLException e) {
             LOGGER.error("ProductDaoImpl delete SQL exception", e);
             e.printStackTrace();
+        } finally {
+            close();
         }
     }
 
     @Override
-    public void close() {
+    public void close(){
         try {
-            if (connectionShouldBeClosed && connection != null && !connection.isClosed()) {
-                connection.close();
-            }
+            DatabaseConnection.getInstance().getConnectionPool().releaseConnection(connection);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
