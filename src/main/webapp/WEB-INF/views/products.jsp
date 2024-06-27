@@ -1,3 +1,5 @@
+<%@ page import="com.warehouse.dto.ProductDto" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -33,16 +35,23 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach var="product" items="${products}">
-        <tr>
-            <td>${product.name}</td>
-            <td>${product.description}</td>
-            <td>${product.producer}</td>
-            <td>${product.amount}</td>
-            <td>${product.price}</td>
-            <td>${product.category}</td>
-        </tr>
-    </c:forEach>
+    <%
+        List<ProductDto> products = (List<ProductDto>) request.getAttribute("products");
+        if (products != null) {
+            for (ProductDto product : products) {
+    %>
+    <tr>
+        <td><%= product.getName() %></td>
+        <td><%= product.getDescription() %></td>
+        <td><%= product.getProducer() %></td>
+        <td><%= product.getAmount() %></td>
+        <td><%= product.getPrice() %></td>
+        <td><%= product.getCategory() %></td>
+    </tr>
+    <%
+            }
+        }
+    %>
     </tbody>
 </table>
 </body>
