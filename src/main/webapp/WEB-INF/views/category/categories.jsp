@@ -30,17 +30,20 @@
         </div>
     </div>
 </nav>
-<div class="container text-center">
+<div class="container text-start">
     <h1>Categories List</h1>
 </div>
-<a href="/categories/add" class="btn btn-success">Add category</a>
+<div class="container-fluid cont-main">
+<a href="/categories/add" class="btn btn-outline-primary">Add category</a>
+</div>
+<div class="container-fluid cont-main">
 <table class="table table-hover">
     <thead class="table table-dark">
     <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Value</th>
-        <th>Actions</th>
+        <th style="width: 30%">Name</th>
+        <th style="width: 30%">Description</th>
+        <th style="width: 30%">Value</th>
+        <th style="width: 10%">Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -56,8 +59,8 @@
         <td><%= category.getDescription() %></td>
         <td><%= value %></td>
         <td class="text-end">
-            <button class="btn btn-primary" type="button" onclick="editCategory('<%= category.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
-            <button class="btn btn-danger" type="button" onclick="deleteCategory('<%= category.getName() %>')"><i class="bi bi-trash-fill"></i></button>
+            <button class="btn btn-primary me-1" type="button" onclick="editCategory('<%= category.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
+            <button class="btn btn-danger me-1" type="button" onclick="deleteCategory('<%= category.getName() %>')"><i class="bi bi-trash-fill"></i></button>
         </td>
     </tr>
     <%
@@ -66,6 +69,7 @@
     %>
     </tbody>
 </table>
+</div>
 <script src="/resources/static/js/categories.js"></script>
 <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -64,7 +64,7 @@ public class LoginController extends HttpServlet {
             // Успішний вхід, створення сесії
             HttpSession session = req.getSession();
             session.setAttribute("user", login);
-            resp.sendRedirect(req.getContextPath() + "/products");
+            resp.sendRedirect(req.getContextPath() + "/");
         } else {
             // Невдалий вхід, повернення на сторінку входу з помилкою
             req.setAttribute("errorMessage", "Invalid login or password");

@@ -27,8 +27,9 @@
     </div>
 </nav>
 <div class="container">
-<h2>Hello World!</h2>
+<h1>Hello!</h1>
 </div>
+<div class="container text-center"><img src="https://media.tenor.com/HApzlOkcrYIAAAAM/fr-ong.gif" width="800" height="400" alt=""></div>
 <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

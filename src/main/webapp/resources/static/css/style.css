@@ -1,5 +1,9 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
+h1 {
+    margin-top: 20px;
+}
+
 #nav-active-link{
     opacity: 0.7;
 }
@@ -7,6 +11,10 @@
 #log-in-container{
     margin-top: 15%;
     width: 400px;
+}
+
+.table-responsive {
+    table-layout: fixed;
 }
 
 .modal-body {
@@ -20,4 +28,16 @@
 
 .modal-content th {
     white-space: nowrap;
+}
+
+.cont-main {
+    width: 100%;
+    max-width: 90%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.btn {
+    margin-left: 5px;
+    margin-right: 5px;
 }

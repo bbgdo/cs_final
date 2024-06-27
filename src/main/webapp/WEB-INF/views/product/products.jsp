@@ -31,15 +31,16 @@
         </div>
     </div>
 </nav>
-<div class="container text-center">
-<h1>Product List</h1>
+<div class="container text-start">
+    <h1>Product List</h1>
 </div>
-<div class="container-fluid">
+<div class="container-fluid cont-main">
     <div class="row">
         <div class="col d-flex text-start">
-            <a href="/products/add" class="btn btn-success">Add product</a>
+            <a href="/products/add" class="btn btn-outline-primary">Add product</a>
         </div>
         <div class="col d-flex text-end">
+            <a href="/products" class="btn btn-dark">Reset</a>
             <button class="btn btn-dark dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 Categories
             </button>
@@ -63,48 +64,50 @@
                 <input class="form-control" placeholder="name" type="text" id="name_search" name="name_search" required>
                 <button type="submit" class="btn btn-outline-dark">Search</button>
             </form>
-            <a href="/products" class="btn btn-dark">Reset</a>
         </div>
     </div>
 </div>
-<table class="table table-hover">
-    <thead class="table table-dark">
-    <tr>
-        <th>Name</th>
-        <th>Producer</th>
-        <th>Amount</th>
-        <th>Price</th>
-        <th>Category</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <%
-        List<ProductDto> products = (List<ProductDto>) request.getAttribute("products");
-        if (products != null) {
-            for (ProductDto product : products) {
-    %>
-    <tr>
-        <td><%= product.getName() %></td>
-        <td><%= product.getProducer() %></td>
-        <td><%= product.getAmount() %></td>
-        <td><%= product.getPrice() %></td>
-        <td><%= product.getCategory() %></td>
-        <td class="text-end">
-            <button class="btn btn-dark" type="button" onclick="showDetails('<%= product.getName() %>', '<%= product.getDescription() %>', '<%= product.getAmount() %>', '<%= product.getPrice() %>')"><i class="bi bi-eye"></i></button>
-            <button class="btn btn-primary" type="button" onclick="addAmount('<%= product.getName() %>')"><i class="bi bi-plus-circle"></i></button>
-            <input type="number" class="form-control d-inline-block w-25" id="amount-<%= product.getName() %>" min="0">
-            <button class="btn btn-primary" type="button" onclick="writeOff('<%= product.getName() %>')"><i class="bi bi-dash-circle"></i></button>
-            <button class="btn btn-primary" type="button" onclick="editProduct('<%= product.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
-            <button class="btn btn-danger" type="button" onclick="deleteProduct('<%= product.getName() %>')"><i class="bi bi-trash-fill"></i></button>
-        </td>
-    </tr>
-    <%
+<div class="container-fluid cont-main">
+    <table class="table table-hover table-responsive">
+        <thead class="table table-dark">
+        <tr>
+            <th style="width: 20%;">Name</th>
+            <th style="width: 20%;">Producer</th>
+            <th style="width: 10%;">Amount</th>
+            <th style="width: 10%;">Price</th>
+            <th style="width: 20%;">Category</th>
+            <th style="width: 20%;">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+            List<ProductDto> products = (List<ProductDto>) request.getAttribute("products");
+            if (products != null) {
+                for (ProductDto product : products) {
+        %>
+        <tr>
+            <td><%= product.getName() %></td>
+            <td><%= product.getProducer() %></td>
+            <td><%= product.getAmount() %></td>
+            <td><%= product.getPrice() %></td>
+            <td><%= product.getCategory() %></td>
+            <td class="align-items-center text-end">
+                <button class="btn btn-dark me-1" type="button" onclick="showDetails('<%= product.getName() %>', '<%= product.getDescription() %>', '<%= product.getAmount() %>', '<%= product.getPrice() %>')"><i class="bi bi-eye"></i></button>
+                <button class="btn btn-primary me-1" type="button" onclick="addAmount('<%= product.getName() %>')"><i class="bi bi-plus-circle"></i></button>
+                <input type="number" class="form-control d-inline-block ms-1 me-1" id="amount-<%= product.getName() %>" min="0" style="width: 70px">
+                <button class="btn btn-primary me-1" type="button" onclick="writeOff('<%= product.getName() %>')"><i class="bi bi-dash-circle"></i></button>
+                <button class="btn btn-primary me-1" type="button" onclick="editProduct('<%= product.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
+                <button class="btn btn-danger" type="button" onclick="deleteProduct('<%= product.getName() %>')"><i class="bi bi-trash-fill"></i></button>
+            </td>
+        </tr>
+        <%
+                }
             }
-        }
-    %>
-    </tbody>
-</table>
+        %>
+        </tbody>
+    </table>
+</div>
+
 <div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
