@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @WebServlet("/categories")
 public class CategoryListController extends HttpServlet {
@@ -38,20 +39,30 @@ public class CategoryListController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Map<CategoryDto, Double> categories = new HashMap<>();
         String name_search = req.getParameter("name_search");
+
         if (name_search != null && !name_search.isEmpty()){
-            CategoryDto category = categoryService.getById(name_search).get();
-            categories.put(category, categoryService.categoryValue(name_search));
-        }
-        else {
+            Optional<CategoryDto> categoryOpt = categoryService.getById(name_search);
+            if (categoryOpt.isPresent()) {
+                CategoryDto category = categoryOpt.get();
+                categories.put(category, categoryService.categoryValue(name_search));
+            } else {
+                req.getSession().setAttribute("errorMessage", "Category not found");
+                resp.sendRedirect(req.getContextPath() + "/categories");
+                return;
+            }
+        } else {
             List<CategoryDto> categoriesList = categoryService.getAll();
             for (CategoryDto category : categoriesList){
                 categories.put(category, categoryService.categoryValue(category.getName()));
             }
         }
+
         req.setAttribute("categories", categories);
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/category/categories.jsp");
         dispatcher.forward(req, resp);
     }
+
+
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

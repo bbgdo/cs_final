@@ -24,7 +24,7 @@
                     <a class="nav-link text-white" href="/products">Products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" id="nav-active-link" id="nav-active-link" href="/categories">Categories</a>
+                    <a class="nav-link text-white" id="nav-active-link" href="/categories">Categories</a>
                 </li>
             </ul>
         </div>
@@ -48,38 +48,38 @@
     </div>
 </div>
 <div class="container-fluid cont-main">
-<table class="table table-hover">
-    <thead class="table table-dark">
-    <tr>
-        <th style="width: 30%">Name</th>
-        <th style="width: 30%">Description</th>
-        <th style="width: 30%">Value</th>
-        <th style="width: 10%">Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <%
-        Map<CategoryDto, Double> categories = (Map<CategoryDto, Double>) request.getAttribute("categories");
-        if (categories != null) {
-            for (Map.Entry<CategoryDto, Double> entry : categories.entrySet()) {
-                CategoryDto category = entry.getKey();
-                Double value = entry.getValue();
-    %>
-    <tr>
-        <td><%= category.getName() %></td>
-        <td><%= category.getDescription() %></td>
-        <td><%= value %></td>
-        <td class="text-end">
-            <button class="btn btn-primary me-1" type="button" onclick="editCategory('<%= category.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
-            <button class="btn btn-danger me-1" type="button" onclick="deleteCategory('<%= category.getName() %>')"><i class="bi bi-trash-fill"></i></button>
-        </td>
-    </tr>
-    <%
+    <table class="table table-hover">
+        <thead class="table table-dark">
+        <tr>
+            <th style="width: 30%">Name</th>
+            <th style="width: 30%">Description</th>
+            <th style="width: 30%">Value</th>
+            <th style="width: 10%">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+            Map<CategoryDto, Double> categories = (Map<CategoryDto, Double>) request.getAttribute("categories");
+            if (categories != null) {
+                for (Map.Entry<CategoryDto, Double> entry : categories.entrySet()) {
+                    CategoryDto category = entry.getKey();
+                    Double value = entry.getValue();
+        %>
+        <tr>
+            <td><%= category.getName() %></td>
+            <td><%= category.getDescription() %></td>
+            <td><%= value %></td>
+            <td class="text-end">
+                <button class="btn btn-primary me-1" type="button" onclick="editCategory('<%= category.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
+                <button class="btn btn-danger me-1" type="button" onclick="deleteCategory('<%= category.getName() %>')"><i class="bi bi-trash-fill"></i></button>
+            </td>
+        </tr>
+        <%
+                }
             }
-        }
-    %>
-    </tbody>
-</table>
+        %>
+        </tbody>
+    </table>
 </div>
 
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
@@ -90,7 +90,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p id="errorMessage"></p>
+                <p id="errorMessage"><%= session.getAttribute("errorMessage") %></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
