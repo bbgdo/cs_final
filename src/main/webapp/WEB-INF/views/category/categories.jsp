@@ -34,7 +34,18 @@
     <h1>Categories List</h1>
 </div>
 <div class="container-fluid cont-main">
-<a href="/categories/add" class="btn btn-outline-primary">Add category</a>
+    <div class="row">
+        <div class="col d-flex text-start">
+            <a href="/categories/add" class="btn btn-outline-primary">Add category</a>
+        </div>
+        <div class="col d-flex text-end">
+            <a href="/categories" class="btn btn-dark">Reset</a>
+            <form class="input-group me-2" action="/categories" method="get">
+                <input class="form-control" placeholder="name" type="text" id="name_search" name="name_search" required>
+                <button type="submit" class="btn btn-outline-dark">Search</button>
+            </form>
+        </div>
+    </div>
 </div>
 <div class="container-fluid cont-main">
 <table class="table table-hover">
@@ -70,7 +81,34 @@
     </tbody>
 </table>
 </div>
+
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="/resources/static/js/categories.js"></script>
 <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var errorMessage = '<%= session.getAttribute("errorMessage") %>';
+        if (errorMessage && errorMessage !== "null") {
+            showError(errorMessage);
+            <% session.removeAttribute("errorMessage"); %>
+        }
+    });
+</script>
 </body>
 </html>

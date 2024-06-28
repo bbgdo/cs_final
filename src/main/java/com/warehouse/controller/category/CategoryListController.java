@@ -11,7 +11,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -37,10 +36,17 @@ public class CategoryListController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<CategoryDto> categoriesList = categoryService.getAll();
         Map<CategoryDto, Double> categories = new HashMap<>();
-        for (CategoryDto category : categoriesList){
-            categories.put(category, categoryService.categoryValue(category.getName()));
+        String name_search = req.getParameter("name_search");
+        if (name_search != null && !name_search.isEmpty()){
+            CategoryDto category = categoryService.getById(name_search).get();
+            categories.put(category, categoryService.categoryValue(name_search));
+        }
+        else {
+            List<CategoryDto> categoriesList = categoryService.getAll();
+            for (CategoryDto category : categoriesList){
+                categories.put(category, categoryService.categoryValue(category.getName()));
+            }
         }
         req.setAttribute("categories", categories);
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/category/categories.jsp");

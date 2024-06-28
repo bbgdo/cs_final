@@ -13,3 +13,9 @@ function deleteCategory(name) {
 function editCategory(name) {
     window.location.href = '/categories/edit?name=' + name;
 }
+
+function showError(message) {
+    document.getElementById('errorMessage').innerText = message;
+    const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+    errorModal.show();
+}
