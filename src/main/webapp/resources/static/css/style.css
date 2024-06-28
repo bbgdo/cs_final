@@ -4,13 +4,20 @@ h1 {
     margin-top: 20px;
 }
 
-#nav-active-link{
+#nav-active-link {
     opacity: 0.7;
 }
 
-#log-in-container{
+#log-in-container {
     margin-top: 15%;
     width: 400px;
+}
+
+.cont-manage {
+    margin-top: 8%;
+    width: 100%;
+    max-width: 700px;
+    border-radius: 10px;
 }
 
 .table-responsive {

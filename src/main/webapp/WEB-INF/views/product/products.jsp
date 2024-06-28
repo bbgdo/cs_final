@@ -94,7 +94,7 @@
             <td class="align-items-center text-end">
                 <button class="btn btn-dark me-1" type="button" onclick="showDetails('<%= product.getName() %>', '<%= product.getDescription() %>', '<%= product.getAmount() %>', '<%= product.getPrice() %>')"><i class="bi bi-eye"></i></button>
                 <button class="btn btn-primary me-1" type="button" onclick="addAmount('<%= product.getName() %>')"><i class="bi bi-plus-circle"></i></button>
-                <input type="number" class="form-control d-inline-block ms-1 me-1" id="amount-<%= product.getName() %>" min="0" style="width: 70px">
+                <input type="number" class="form-control d-inline-block ms-1 me-1" id="amount-<%= product.getName() %>" min="0" style="width: 84px">
                 <button class="btn btn-primary me-1" type="button" onclick="writeOff('<%= product.getName() %>')"><i class="bi bi-dash-circle"></i></button>
                 <button class="btn btn-primary me-1" type="button" onclick="editProduct('<%= product.getName() %>')"><i class="bi bi-pencil-fill"></i></button>
                 <button class="btn btn-danger" type="button" onclick="deleteProduct('<%= product.getName() %>')"><i class="bi bi-trash-fill"></i></button>
