@@ -1,14 +1,9 @@
 package com.warehouse.controller.login;
 
-import com.warehouse.dao.impl.ProductDaoImpl;
 import com.warehouse.dao.impl.UserDaoImpl;
 import com.warehouse.entity.User;
 import com.warehouse.service.UserService;
 import com.warehouse.service.impl.UserServiceImpl;
-
-import java.io.IOException;
-import java.sql.SQLException;
-
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +11,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
@@ -73,7 +71,7 @@ public class LoginController extends HttpServlet {
         }
     }
 
-    private void handleRegister(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void handleRegister(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
 

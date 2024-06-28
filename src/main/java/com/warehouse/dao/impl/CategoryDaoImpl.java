@@ -14,15 +14,15 @@ import java.util.Optional;
 public class CategoryDaoImpl implements CategoryDao {
     private static final Logger LOGGER = LogManager.getLogger(CategoryDaoImpl.class);
 
-    private static String GET_ALL = "SELECT * FROM categories ORDER BY category_name";
-    private static String GET_BY_ID = "SELECT * FROM categories WHERE category_name = ?";
-    private static String GET_VALUE = "SELECT SUM(product_amount * product_price) AS category_value FROM products WHERE product_category = ?";
-    private static String CREATE = "INSERT INTO categories (category_name, category_description) VALUES (?, ?)";
-    private static String UPDATE = "UPDATE categories SET category_name = ?, category_description = ? WHERE category_name = ?";
-    private static String DELETE = "DELETE FROM categories WHERE category_name = ?";
+    private static final String GET_ALL = "SELECT * FROM categories ORDER BY category_name";
+    private static final String GET_BY_ID = "SELECT * FROM categories WHERE category_name = ?";
+    private static final String GET_VALUE = "SELECT SUM(product_amount * product_price) AS category_value FROM products WHERE product_category = ?";
+    private static final String CREATE = "INSERT INTO categories (category_name, category_description) VALUES (?, ?)";
+    private static final String UPDATE = "UPDATE categories SET category_name = ?, category_description = ? WHERE category_name = ?";
+    private static final String DELETE = "DELETE FROM categories WHERE category_name = ?";
 
-    private static String NAME = "category_name";
-    private static String DESCRIPTION = "category_description";
+    private static final String NAME = "category_name";
+    private static final String DESCRIPTION = "category_description";
 
     private Connection connection;
 

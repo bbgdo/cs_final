@@ -1,30 +1,27 @@
 package com.warehouse.controller.product;
 
 import com.warehouse.converter.CategoryConverter;
+import com.warehouse.converter.ProductConverter;
 import com.warehouse.dao.impl.CategoryDaoImpl;
+import com.warehouse.dao.impl.ProductDaoImpl;
 import com.warehouse.dto.CategoryDto;
 import com.warehouse.dto.ProductDto;
 import com.warehouse.service.CategoryService;
 import com.warehouse.service.ProductService;
 import com.warehouse.service.impl.CategoryServiceImpl;
 import com.warehouse.service.impl.ProductServiceImpl;
-import com.warehouse.converter.ProductConverter;
-import com.warehouse.dao.impl.ProductDaoImpl;
-
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @WebServlet("/products")
 public class ProductListController extends HttpServlet {
@@ -73,7 +70,7 @@ public class ProductListController extends HttpServlet {
 
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         String name = req.getParameter("name");
         if (name != null && !name.isEmpty()) {
             productService.delete(name);
@@ -82,7 +79,7 @@ public class ProductListController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         String action = req.getParameter("action");
         String name = req.getParameter("name");
         int amount = Integer.parseInt(req.getParameter("amount"));

@@ -3,14 +3,13 @@ package com.warehouse.dao.impl;
 import com.warehouse.dao.UserDao;
 import com.warehouse.db.DatabaseConnection;
 import com.warehouse.entity.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserDaoImpl implements UserDao {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserDaoImpl.class);
 
     private static final String FIND_BY_LOGIN = "SELECT * FROM users WHERE login = ?";
 
