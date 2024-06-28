@@ -1,3 +1,10 @@
+document.addEventListener("DOMContentLoaded", function() {
+    const errorMessage = document.getElementById('errorMessage').innerText;
+    if (errorMessage && errorMessage !== "null") {
+        showError(errorMessage);
+    }
+});
+
 function deleteCategory(name) {
     fetch('/categories?name=' + name, {
         method: 'DELETE'
@@ -5,7 +12,7 @@ function deleteCategory(name) {
         if (response.ok) {
             window.location.reload();
         } else {
-            alert('Failed to delete category');
+            showError('Failed to delete category');
         }
     });
 }
