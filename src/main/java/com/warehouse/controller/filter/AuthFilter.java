@@ -33,14 +33,4 @@ public class AuthFilter extends HttpFilter implements Filter {
             response.sendRedirect(request.getContextPath() + "/login");
         }
     }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // initialization if needed
-    }
-
-    @Override
-    public void destroy() {
-        // cleanup if needed
-    }
 }

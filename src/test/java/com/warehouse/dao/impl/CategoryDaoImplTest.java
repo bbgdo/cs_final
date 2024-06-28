@@ -120,7 +120,7 @@ public class CategoryDaoImplTest {
     }
 
     @Test
-    void testSimultaneousAccessShouldHandleConcurrency() throws InterruptedException, ExecutionException {
+    void testSimultaneousMoreConnectionsThanInConnectionPool() throws InterruptedException, ExecutionException {
         int numberOfThreads = 150;
         ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 
@@ -141,6 +141,110 @@ public class CategoryDaoImplTest {
         }
 
         executor.shutdown();
+    }
+
+    @Test
+    void testSimultaneousCreateShouldCreateSingleCategory() throws InterruptedException, ExecutionException {
+        int numberOfThreads = 150;
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+
+        Callable<Boolean> task = () -> {
+            CategoryDaoImpl localDao = new CategoryDaoImpl();
+            Category category = Category.builder()
+                    .name("test_category_9999999999996")
+                    .description("test_category_9999999999996")
+                    .build();
+            localDao.create(category);
+            return true;
+        };
+
+        List<Future<Boolean>> futures = new ArrayList<>();
+        for (int i = 0; i < numberOfThreads; i++) {
+            futures.add(executor.submit(task));
+        }
+
+        for (Future<Boolean> future : futures) {
+            future.get();
+        }
+
+        List<Category> categories = categoryDao.getAll();
+        long count = categories.stream().filter(category -> category.getName().equals("test_category_9999999999996")).count();
+
+        // Delete the test category from db
+        categoryDao.delete("test_category_9999999999996");
+        executor.shutdown();
+        assertEquals(1, count);
+    }
+
+    @Test
+    void testSimultaneousUpdateShouldConsistentlyUpdateCategory() throws InterruptedException, ExecutionException {
+        Category category = Category.builder()
+                .name("test_category_9999999999996")
+                .description("test_category_9999999999996")
+                .build();
+        categoryDao.create(category);
+
+        int numberOfThreads = 20;
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+
+        Callable<Boolean> task = () -> {
+            CategoryDaoImpl localDao = new CategoryDaoImpl();
+            Category updatedCategory = Category.builder()
+                    .name("test_category_9999999999996")
+                    .description("test_category_9999999999996")
+                    .build();
+            localDao.update(updatedCategory, "test_category_9999999999996");
+            return true;
+        };
+
+        List<Future<Boolean>> futures = new ArrayList<>();
+        for (int i = 0; i < numberOfThreads; i++) {
+            futures.add(executor.submit(task));
+        }
+
+        for (Future<Boolean> future : futures) {
+            future.get();
+        }
+
+        Category updatedCategory = categoryDao.getById("test_category_9999999999996").get();
+
+        // Delete the test category from db
+        categoryDao.delete("test_category_9999999999996");
+
+        executor.shutdown();
+        assertEquals("test_category_9999999999996", updatedCategory.getDescription());
+    }
+
+    @Test
+    void testSimultaneousDeleteShouldRemoveCategory() throws InterruptedException, ExecutionException {
+        Category category = Category.builder()
+                .name("test_category_9999999999996")
+                .description("test_category_9999999999996")
+                .build();
+        categoryDao.create(category);
+
+        int numberOfThreads = 20;
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+
+        Callable<Boolean> task = () -> {
+            CategoryDaoImpl localDao = new CategoryDaoImpl();
+            localDao.delete("test_category_9999999999996");
+            return true;
+        };
+
+        List<Future<Boolean>> futures = new ArrayList<>();
+        for (int i = 0; i < numberOfThreads; i++) {
+            futures.add(executor.submit(task));
+        }
+
+        for (Future<Boolean> future : futures) {
+            future.get();
+        }
+
+        Optional<Category> deletedCategory = categoryDao.getById("test_category_9999999999996");
+
+        executor.shutdown();
+        assertFalse(deletedCategory.isPresent());
     }
 
 }

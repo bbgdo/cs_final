@@ -97,4 +97,13 @@ class CategoryServiceImplTest {
 
         verify(categoryDao, times(1)).delete("test_category_9999999999999");
     }
+
+    @Test
+    void testTestCategoryValueShouldCallDaoCategoryValue() {
+        when(categoryDao.categoryValue("test_category_9999999999999")).thenReturn(1337.00);
+
+        categoryService.categoryValue("test_category_9999999999999");
+
+        verify(categoryDao, times(1)).categoryValue("test_category_9999999999999");
+    }
 }

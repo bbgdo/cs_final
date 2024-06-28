@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Optional;
+import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -87,8 +87,9 @@ class ProductDaoImplTest {
     }
 
     @Test
-    void testReadProductWithInvalidNameShouldReturnNull() {
+    void testReadProductWithInvalidNameShouldReturnOptionalEmpty() {
         assertThrows(NoSuchElementException.class, () -> productDao.getById("test_product_8888888888888").get());
+        assertEquals(Optional.empty(), productDao.getById("test_product_8888888888888"));
     }
 
     @Test
@@ -193,14 +194,160 @@ class ProductDaoImplTest {
             });
         }
 
-        startLatch.countDown(); // Start all threads
-        endLatch.await(); // Wait for all threads to finish
+        startLatch.countDown();
+        endLatch.await();
         executorService.shutdown();
 
         Product updatedProduct = productDao.getById("test_product_9999999999999").get();
         int expectedAmount = initialAmount + (amountToAdd * numberOfThreads);
 
         assertEquals(expectedAmount, updatedProduct.getAmount());
+    }
+
+    @Test
+    void testConcurrentWriteOffAmount() throws InterruptedException {
+        final int numberOfThreads = 10;
+        final int amountToWriteOff = 3;
+        final CountDownLatch startLatch = new CountDownLatch(1);
+        final CountDownLatch endLatch = new CountDownLatch(numberOfThreads);
+
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
+
+        Product initialProduct = productDao.getById("test_product_9999999999999").get();
+        int initialAmount = initialProduct.getAmount();
+
+        for (int i = 0; i < numberOfThreads; i++) {
+            executorService.submit(() -> {
+                try {
+                    startLatch.await();
+                    productDao.writeOff(amountToWriteOff, "test_product_9999999999999");
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    endLatch.countDown();
+                }
+            });
+        }
+
+        startLatch.countDown();
+        endLatch.await();
+        executorService.shutdown();
+
+        Product updatedProduct = productDao.getById("test_product_9999999999999").get();
+        int expectedAmount = initialAmount - (amountToWriteOff * numberOfThreads);
+
+        assertEquals(expectedAmount, updatedProduct.getAmount());
+    }
+
+    @Test
+    void testSimultaneousMoreConnectionsThanInConnectionPool() throws InterruptedException, ExecutionException {
+        int numberOfThreads = 150;
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+
+        Callable<Optional<Product>> task = () -> {
+            ProductDaoImpl localDao = new ProductDaoImpl();
+            return localDao.getById("test_product_9999999999999");
+        };
+
+        List<Future<Optional<Product>>> futures = new ArrayList<>();
+        for (int i = 0; i < numberOfThreads; i++) {
+            futures.add(executor.submit(task));
+        }
+
+        for (Future<Optional<Product>> future : futures) {
+            Optional<Product> product = future.get();
+            assertTrue(product.isPresent());
+            assertEquals("test_product_9999999999999", product.get().getName());
+        }
+
+        executor.shutdown();
+    }
+
+    @Test
+    void testSimultaneousCreateShouldCreateSingleProduct() throws InterruptedException, ExecutionException {
+        int numberOfThreads = 150;
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+
+        Callable<Boolean> task = () -> {
+            ProductDaoImpl localDao = new ProductDaoImpl();
+            Product product = Product.builder()
+                    .name("test_product_9999999999996")
+                    .description("test_product_9999999999996")
+                    .producer("test_product_9999999999996")
+                    .amount(100)
+                    .price(10.0)
+                    .category("test_category_9999999999999")
+                    .build();
+            localDao.create(product);
+            return true;
+        };
+
+        List<Future<Boolean>> futures = new ArrayList<>();
+        for (int i = 0; i < numberOfThreads; i++) {
+            futures.add(executor.submit(task));
+        }
+
+        for (Future<Boolean> future : futures) {
+            future.get();
+        }
+
+        List<Product> products = productDao.getAll();
+        long count = products.stream().filter(product -> product.getName().equals("test_product_9999999999996")).count();
+
+        // Delete test product from db
+        productDao.delete("test_product_9999999999996");
+        executor.shutdown();
+        assertEquals(1, count);
+    }
+
+    @Test
+    void testSimultaneousUpdateShouldConsistentlyUpdateProduct() throws InterruptedException, ExecutionException {
+        Product product = Product.builder()
+                .name("test_product_9999999999996")
+                .description("test_product_9999999999996")
+                .producer("test_product_9999999999996")
+                .amount(100)
+                .price(10.0)
+                .category("test_category_9999999999999")
+                .build();
+        productDao.create(product);
+
+        int numberOfThreads = 20;
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+
+        Callable<Boolean> task = () -> {
+            ProductDaoImpl localDao = new ProductDaoImpl();
+            Product updatedProduct = Product.builder()
+                    .name("test_product_9999999999995")
+                    .description("test_product_9999999999995")
+                    .producer("test_product_9999999999995")
+                    .amount(200)
+                    .price(20.0)
+                    .category("test_category_9999999999999")
+                    .build();
+            localDao.update(updatedProduct, "test_product_9999999999996");
+            return true;
+        };
+
+        List<Future<Boolean>> futures = new ArrayList<>();
+        for (int i = 0; i < numberOfThreads; i++) {
+            futures.add(executor.submit(task));
+        }
+
+        for (Future<Boolean> future : futures) {
+            future.get();
+        }
+
+        Product updatedProduct = productDao.getById("test_product_9999999999995").get();
+
+        // Delete test product from db
+        productDao.delete("test_product_9999999999995");
+
+        executor.shutdown();
+        assertEquals("test_product_9999999999995", updatedProduct.getDescription());
+        assertEquals("test_product_9999999999995", updatedProduct.getProducer());
+        assertEquals(200, updatedProduct.getAmount());
+        assertEquals(20.0, updatedProduct.getPrice());
     }
 
 }

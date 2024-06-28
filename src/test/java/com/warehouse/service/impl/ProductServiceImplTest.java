@@ -105,4 +105,24 @@ class ProductServiceImplTest {
 
         verify(productDao, times(1)).delete("test_product_9999999999999");
     }
+
+    @Test
+    void testAddAmountShouldCallDaoAddAmount() {
+        int amountToAdd = 3;
+        String productName = "test_product_9999999999999";
+
+        productService.addAmount(amountToAdd, productName);
+
+        verify(productDao, times(1)).addAmount(amountToAdd, productName);
+    }
+
+    @Test
+    void testWriteOffShouldCallDaoWriteOff() {
+        int amountToWriteOff = 3;
+        String productName = "test_product_9999999999999";
+
+        productService.writeOff(amountToWriteOff, productName);
+
+        verify(productDao, times(1)).writeOff(amountToWriteOff, productName);
+    }
 }
