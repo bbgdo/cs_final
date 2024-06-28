@@ -41,12 +41,6 @@ public class ProductEditController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            resp.sendRedirect(req.getContextPath() + "/login");
-            return;
-        }
-
         String productName = req.getParameter("name");
         ProductDto product = productService.getById(productName).get();
         List<CategoryDto> categories = categoryService.getAll();
